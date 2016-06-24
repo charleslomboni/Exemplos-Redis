@@ -1,5 +1,7 @@
 ﻿using RedisBoost;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Configuration;
 
 namespace RedisConnection_RedisBoost {
@@ -9,11 +11,12 @@ namespace RedisConnection_RedisBoost {
         private static void Main(string[] args) {
             // RedisBoost usa connectionstring para configurar acesso ao Redis
             var connectionString = ConfigurationManager.ConnectionStrings["Redis"].ConnectionString;
-            var client = RedisClient.ConnectAsync(connectionString).Result;
+            //var client = RedisClient.ConnectAsync(connectionString).Result;
 
-            SimpleExample(connectionString);
-            ClassExample(connectionString);
-            PubSubMessage(connectionString);
+            //SimpleExample(connectionString);
+            //ClassExample(connectionString);
+            //PubSubMessage(connectionString);
+            MultiClassExample(connectionString);
         }
 
         private static void SimpleExample(string connectionString) {
@@ -110,6 +113,60 @@ namespace RedisConnection_RedisBoost {
                         var c = channelMessage.Channels[0];
                         var r = channelMessage.Value.As<Funcionario>();
                     }
+                }
+            }
+        }
+
+        private static void MultiClassExample(string connectionString) {
+            // Conexão
+            using (var pool = RedisClient.CreateClientsPool()) {
+                IRedisClient redisClient;
+                var redisKey = "RedisBoostKeyClass";
+                var redisKeyDelete = "RedisBoostKeyDeleteClass";
+
+                var func = new Funcionario {
+                    IdFuncionario = Guid.NewGuid(),
+                    Name = "Charles",
+                    LastName = "Lomboni",
+                    Age = 28
+                };
+                var func1 = new Funcionario {
+                    IdFuncionario = Guid.NewGuid(),
+                    Name = "Charles1",
+                    LastName = "Lomboni1",
+                    Age = 281
+                };
+                var func2 = new Funcionario {
+                    IdFuncionario = Guid.NewGuid(),
+                    Name = "Charles2",
+                    LastName = "Lomboni2",
+                    Age = 282
+                };
+
+                var funcsCollection = new List<Funcionario>();
+                funcsCollection.Add(func);
+                funcsCollection.Add(func1);
+                funcsCollection.Add(func2);
+
+                // Cria o client
+                using (redisClient = pool.CreateClientAsync(connectionString).Result) {
+                    // Faz de forma assincrona o inserir no Redis
+                    // Adiciona um item a uma key já existente
+                    // http://redis.io/commands/sadd
+                    redisClient.SAddAsync(redisKey, funcsCollection).Wait();
+
+                    // Recupera uma lista de objetos, convertendo em uma lista de Funcionários
+                    // http://redis.io/commands/smembers
+                    var redisReturn = redisClient.SMembersAsync(redisKey).Result.AsArray<IEnumerable<Funcionario>>();
+                    redisClient.ExpireAsync(redisKey, 60);
+                }
+
+                using (redisClient = pool.CreateClientAsync(connectionString).Result) {
+                    redisClient.SetAsync(redisKeyDelete, func).Wait();
+                    var deleteKey = redisClient.GetAsync(redisKeyDelete).Result.As<Funcionario>();
+
+                    // Deleta
+                    var resultDelete = redisClient.DelAsync(redisKeyDelete).Result;
                 }
             }
         }
