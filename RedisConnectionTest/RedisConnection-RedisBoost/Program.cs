@@ -16,7 +16,8 @@ namespace RedisConnection_RedisBoost {
             //SimpleExample(connectionString);
             //ClassExample(connectionString);
             //PubSubMessage(connectionString);
-            MultiClassExample(connectionString);
+            //MultiClassExample(connectionString);
+            MultiPubSubMessage(connectionString);
         }
 
         private static void SimpleExample(string connectionString) {
@@ -167,6 +168,59 @@ namespace RedisConnection_RedisBoost {
 
                     // Deleta
                     var resultDelete = redisClient.DelAsync(redisKeyDelete).Result;
+                }
+            }
+        }
+
+        private static void MultiPubSubMessage(string connectionString) {
+            using (var pool = RedisClient.CreateClientsPool()) {
+                IRedisClient redisClient;
+                var redisKey = "RedisBoostKeyClass";
+                var redisKeyDelete = "RedisBoostKeyDeleteClass";
+
+                var func = new Funcionario {
+                    IdFuncionario = Guid.NewGuid(),
+                    Name = "Charles",
+                    LastName = "Lomboni",
+                    Age = 28
+                };
+
+                // Cria o client
+                using (redisClient = pool.CreateClientAsync(connectionString).Result) {
+                    // Faz de forma assincrona o inserir no Redis
+                    using (var subscriber = redisClient.SubscribeAsync("channel").Result) {
+                        // Cria o client
+                        using (var redisClient2 = pool.CreateClientAsync(connectionString).Result) {
+                            using (var publisher = redisClient2) {
+                                // Publicando 10 mensagens para o canal
+                                for (int i = 0; i < 10; i++) {
+
+                                    func.Name += i;
+                                    publisher.PublishAsync("channel", func).Wait();
+                                }
+                            }
+                        }
+
+                        var channelMessage = subscriber.ReadMessageAsync(ChannelMessageType.Message |
+                                                                         ChannelMessageType.PMessage).Result;
+                        // Criando um segundo subscriber
+                        var subscriber2 = redisClient.SubscribeAsync("channel").Result;
+
+                        // Obtendo a primeira mensagem do canal, utilizando o subscriber2
+                        var channelMessage2 = subscriber2.ReadMessageAsync(ChannelMessageType.Message | ChannelMessageType.PMessage).Result;
+
+                        //Loop para pegar as 10 mensagens no canal
+                        while (channelMessage2.Value.As<Funcionario>() != null) {
+
+                            var r3 = channelMessage2.Value.As<Funcionario>();
+                            Console.WriteLine("Valor: {0}", r3.Name);
+                            channelMessage2 = subscriber2.ReadMessageAsync(ChannelMessageType.Message | ChannelMessageType.PMessage).Result;
+
+                        }
+
+                        var c = channelMessage.Channels[0];
+                        var r = channelMessage.Value.As<Funcionario>();
+                    }
                 }
             }
         }
