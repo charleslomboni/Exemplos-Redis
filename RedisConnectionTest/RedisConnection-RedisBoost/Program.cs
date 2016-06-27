@@ -1,9 +1,5 @@
 ﻿using RedisBoost;
 using System;
-<<<<<<< HEAD
-using System.Collections;
-=======
->>>>>>> 7f04cd29f8936a34b6c5dfb12de4f7fe1c6531c9
 using System.Collections.Generic;
 using System.Configuration;
 
@@ -16,18 +12,11 @@ namespace RedisConnection_RedisBoost {
             var connectionString = ConfigurationManager.ConnectionStrings["Redis"].ConnectionString;
             //var client = RedisClient.ConnectAsync(connectionString).Result;
 
-<<<<<<< HEAD
             //SimpleExample(connectionString);
             //ClassExample(connectionString);
             //PubSubMessage(connectionString);
             //MultiClassExample(connectionString);
             MultiPubSubMessage(connectionString);
-=======
-            SimpleExample(connectionString);
-            //ClassExample(connectionString);
-            //PubSubMessage(connectionString);
-            //ListenToChannel(connectionString);
->>>>>>> 7f04cd29f8936a34b6c5dfb12de4f7fe1c6531c9
         }
 
         private static void SimpleExample(string connectionString) {
