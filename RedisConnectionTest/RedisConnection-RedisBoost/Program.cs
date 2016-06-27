@@ -30,7 +30,6 @@ namespace RedisConnection_RedisBoost {
                     // Faz de forma assincrona o inserir no Redis
                     redisClient.SetAsync(redisKey, "RedisBoost mandando bala!").Wait();
 
-
                     // Recupera de forma assincrona convertendo para string
                     // Outras formas de serializar com o RedisBoost
                     // https://github.com/andrew-bn/RedisBoost/wiki/Serialization
@@ -136,7 +135,6 @@ namespace RedisConnection_RedisBoost {
                             using (var publisher = redisClient2) {
                                 // Publicando 10 mensagens para o canal
                                 for (int i = 0; i < 10; i++) {
-
                                     func.Name += i;
                                     publisher.PublishAsync("channel", func).Wait();
                                 }
@@ -153,11 +151,9 @@ namespace RedisConnection_RedisBoost {
 
                         //Loop para pegar as 10 mensagens no canal
                         while (channelMessage2.Value.As<Funcionario>() != null) {
-
                             var r3 = channelMessage2.Value.As<Funcionario>();
                             Console.WriteLine("Valor: {0}", r3.Name);
                             channelMessage2 = subscriber2.ReadMessageAsync(ChannelMessageType.Message | ChannelMessageType.PMessage).Result;
-
                         }
 
                         var c = channelMessage.Channels[0];
@@ -166,42 +162,6 @@ namespace RedisConnection_RedisBoost {
                 }
             }
         }
-
-        private static void ListenToChannel(string connectionString) {
-            using (var pool = RedisClient.CreateClientsPool()) {
-                IRedisClient redisClient;
-                var redisKey = "RedisBoostKeyClass";
-                var redisKeyDelete = "RedisBoostKeyDeleteClass";
-
-                var func = new Funcionario {
-                    IdFuncionario = Guid.NewGuid(),
-                    Name = "Charles",
-                    LastName = "Lomboni",
-                    Age = 28
-                };
-
-                // Cria o client
-                using (redisClient = pool.CreateClientAsync(connectionString).Result) {
-                    // Faz de forma assincrona o inserir no Redis
-                    using (var subscriber = redisClient.SubscribeAsync("channel").Result) {
-                        // Obtendo a primeira mensagem do canal, utilizando o subscriber2
-                        var channelMessage = subscriber.ReadMessageAsync(ChannelMessageType.Message | ChannelMessageType.PMessage).Result;
-                        //Loop para pegar as 10 mensagens no canal
-                        while (channelMessage.Value.As<Funcionario>() != null) {
-                            var r3 = channelMessage.Value.As<Funcionario>();
-                            Console.WriteLine("Valor: {0}", r3.Name);
-                            channelMessage = subscriber.ReadMessageAsync(ChannelMessageType.Message | ChannelMessageType.PMessage).Result;
-                        }
-                        var c = channelMessage.Channels[0];
-                        var r = channelMessage.Value.As<Funcionario>();
-                    }
-                }
-            }
-        }
-
-
-
-
     }
 
     public class Funcionario {

@@ -1,29 +1,20 @@
 ﻿using RedisBoost;
 using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RedisBoost_ListenChannel {
-    class ListenChannel {
-        static void Main(string[] args) {
 
+    internal class ListenChannel {
+
+        private static void Main(string[] args) {
             // RedisBoost usa connectionstring para configurar acesso ao Redis
             var connectionString = ConfigurationManager.ConnectionStrings["Redis"].ConnectionString;
-            //var client = RedisClient.ConnectAsync(connectionString).Result;
-
-            //SimpleExample(connectionString);
-            //ClassExample(connectionString);
-            //PubSubMessage(connectionString);
             ListenToChannel(connectionString);
         }
 
-
         private static void ListenToChannel(string connectionString) {
             using (var pool = RedisClient.CreateClientsPool()) {
-
                 //IRedisClient redisClient;
 
                 // Cria o client
@@ -38,7 +29,6 @@ namespace RedisBoost_ListenChannel {
                     //criando um subscriber que vai assinar os canais com o padrão definido
                     //using (var subscriber = redisClient.PSubscribeAsync("__key*__:*").Result) {
                     using (var subscriber = redisClient.PSubscribeAsync("*").Result) {
-
                         // Obtendo a primeira mensagem do canal, utilizando o subscriber
                         var channelMessage = subscriber.ReadMessageAsync().Result;
 
@@ -52,7 +42,6 @@ namespace RedisBoost_ListenChannel {
                             }
                             channelMessage = subscriber.ReadMessageAsync().Result;
                         }
-
                     }
                 }
             }
