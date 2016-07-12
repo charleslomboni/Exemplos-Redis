@@ -12,11 +12,12 @@ namespace RedisConnection_RedisBoost {
             var connectionString = ConfigurationManager.ConnectionStrings["Redis"].ConnectionString;
             //var client = RedisClient.ConnectAsync(connectionString).Result;
 
-            //SimpleExample(connectionString);
+            SimpleExample(connectionString);
             //ClassExample(connectionString);
             //PubSubMessage(connectionString);
             //MultiClassExample(connectionString);
-            MultiPubSubMessage(connectionString);
+            //MultiPubSubMessage(connectionString);
+            Console.Read();
         }
 
         private static void SimpleExample(string connectionString) {
@@ -29,21 +30,31 @@ namespace RedisConnection_RedisBoost {
                 // Cria o client
                 using (redisClient = pool.CreateClientAsync(connectionString).Result) {
                     // Faz de forma assincrona o inserir no Redis
-                    redisClient.SetAsync(redisKey, "RedisBoost mandando bala!").Wait();
+                    redisClient.SetAsync(redisKey, "Redis no .NET!!! Mandando bala!").Wait();
+                    Console.WriteLine("Chave {0} criada com sucesso!", redisKey);
 
                     // Recupera de forma assincrona convertendo para string
                     // Outras formas de serializar com o RedisBoost
                     // https://github.com/andrew-bn/RedisBoost/wiki/Serialization
                     var redisReturn = redisClient.GetAsync(redisKey).Result.As<string>();
-                    //redisClient.ExpireAsync(redisKey, 60);
+                    Console.WriteLine("Valor {0} da chave {1} criada com sucesso!", redisReturn, redisKey);
+
+                    redisClient.ExpireAsync(redisKey, 60);
+                    Console.WriteLine("Chave {0} com TTL de 60 segundos.", redisKey);
                 }
 
+
                 using (redisClient = pool.CreateClientAsync(connectionString).Result) {
+
                     redisClient.SetAsync(redisKeyDelete, "RedisBoost Delete key.").Wait();
+                    Console.WriteLine("Chave {0} criada para ser deletada...", redisKeyDelete);
+
                     var deleteKey = redisClient.GetAsync(redisKeyDelete).Result.As<string>();
+                    Console.WriteLine("Valor {0} da chave {1} que será deletada.", redisKeyDelete, deleteKey);
 
                     // Deleta
                     var resultDelete = redisClient.DelAsync(redisKeyDelete).Result;
+                    Console.WriteLine("Chave {0} foi deletada? {1}", redisKeyDelete, Convert.ToBoolean(resultDelete));
                 }
             }
         }
