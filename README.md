@@ -13,7 +13,8 @@ Exemplo de utilização do RedisBoost e StackExchange.Redis com C#
 ### StackExchange.Redis tem uma documentação mais completa:
 - https://github.com/StackExchange/StackExchange.Redis
 
-
+### Artigo que escrevi sobre Redis
+- https://charleslomboni.wordpress.com/2016/08/12/hub-de-eventos-com-redis/
 
 Os exemplos estão bem explicativos e comentados.
 
