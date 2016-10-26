@@ -12,9 +12,9 @@ namespace RedisConnection_RedisBoost {
             var connectionString = ConfigurationManager.ConnectionStrings["Redis"].ConnectionString;
             //var client = RedisClient.ConnectAsync(connectionString).Result;
 
-            //SimpleExample(connectionString);
+            SimpleExample(connectionString);
             //ClassExample(connectionString);
-            PubSubMessage(connectionString);
+            //PubSubMessage(connectionString);
             //MultiClassExample(connectionString);
             //MultiPubSubMessage(connectionString);
             Console.Read();
@@ -125,7 +125,6 @@ namespace RedisConnection_RedisBoost {
 
         private static void PubSubMessage(string connectionString) {
             using (var pool = RedisClient.CreateClientsPool()) {
-
                 IRedisClient redisClient;
 
                 // Cria o client
