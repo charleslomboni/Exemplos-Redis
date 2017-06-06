@@ -57,6 +57,7 @@ namespace RedisConnectionTest {
 
             // Data Types aceitos no Redis
             // http://redis.io/topics/data-types
+            //db.SetAddAsync(redisKey, func).Wait();
             db.StringSet(redisKey, "ID: " + func.IdFuncionario + " - Nome: " + func.Name + " " + func.LastName + ", Idade: " + func.Age);
 
             // Força 60 segundos para a chave expirar
