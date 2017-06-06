@@ -1,6 +1,10 @@
 # Exemplos-Redis
 Exemplo de utilização do RedisBoost e StackExchange.Redis com C#
 
+<strong>Master branch</strong><br />
+[![Build status](https://ci.appveyor.com/api/projects/status/8xm83q5u0n4x3ylr/branch/master?svg=true)](https://ci.appveyor.com/project/charleslomboni/exemplos-redis/branch/master)
+
+
 ### Baixando Redisx64 pelo chocolatey:
 - https://chocolatey.org/packages/redis-64/
 
