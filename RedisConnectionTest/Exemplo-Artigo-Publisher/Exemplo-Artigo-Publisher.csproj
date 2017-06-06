@@ -34,9 +34,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="RedisBoost, Version=1.6.4.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="RedisBoost">
       <HintPath>..\packages\RedisBoost.1.6.4\lib\net40\RedisBoost.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
