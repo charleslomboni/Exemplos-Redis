@@ -1,13 +1,12 @@
-﻿using System;
+﻿using RedisBoost;
+using System;
 using System.Configuration;
-using RedisBoost;
 
 namespace Exemplo_Artigo_Publisher {
 
     internal class Program {
 
         private static void Main(string[] args) {
-
             // RedisBoost usa connectionstring para configurar acesso ao Redis
             var connectionString = ConfigurationManager.ConnectionStrings["Redis"].ConnectionString;
 
@@ -15,18 +14,15 @@ namespace Exemplo_Artigo_Publisher {
             RedisPublisher(connectionString);
         }
 
-
         private static void RedisPublisher(string connectionString) {
             using (var pool = RedisClient.CreateClientsPool()) {
                 IRedisClient redisClient;
 
                 // Cria o client
                 using (redisClient = pool.CreateClientAsync(connectionString).Result) {
-
                     string[] channels = { "musica", "tecnologia", "gothamCity", "MundiPagg" };
                     string[] messages = { "stompin' at the savoy - Jim Hall", "Hub de eventos com Redis",
                                           "Gotham esta em paz", "Converta mais e aumente as vendas do seu e-commerce" };
-
 
                     // Publicando mensagens para os canais do array
                     for (int i = 0; i < channels.Length; i++) {
@@ -36,7 +32,6 @@ namespace Exemplo_Artigo_Publisher {
 
                     Console.WriteLine("Mensagens enviadas! :)");
                     Console.Read();
-
                 }
             }
         }

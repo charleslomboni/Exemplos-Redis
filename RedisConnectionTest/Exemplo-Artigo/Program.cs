@@ -1,6 +1,6 @@
-﻿using System;
+﻿using RedisBoost;
+using System;
 using System.Configuration;
-using RedisBoost;
 
 namespace Exemplo_Artigo_Subscriber {
 
@@ -68,7 +68,6 @@ namespace Exemplo_Artigo_Subscriber {
                 using (redisClient = pool.CreateClientAsync(connectionString).Result) {
                     // Usando o PSubscribe para escutar canais específicos e genéricos
                     using (var subscriber = redisClient.PSubscribeAsync(channel).Result) {
-
                         Console.WriteLine("Ouvindo o canal {0}", channel);
 
                         // Obtendo a primeira mensagem do canal, utilizando o subscriber
