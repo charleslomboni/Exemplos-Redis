@@ -1,3 +1,7 @@
+<strong>Master branch</strong><br />
+[![Build status](https://ci.appveyor.com/api/projects/status/iwdm3xpqrsqoutnv/branch/master?svg=true)](https://ci.appveyor.com/project/charleslomboni/exemplos-redis/branch/master)
+
+
 ### Baixando Redisx64 pelo chocolatey:
 - https://chocolatey.org/packages/redis-64/
 
